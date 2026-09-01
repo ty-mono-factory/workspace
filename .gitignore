@@ -42,6 +42,10 @@ ccache-storage/
 **/ccache-storage/
 !**/ccache-storage/.gitkeep
 
+data/
+**/data/
+!**/data/.gitkeep
+
 .config/
 .turbo/
 
