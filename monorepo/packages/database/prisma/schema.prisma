@@ -1,0 +1,104 @@
+datasource db {
+    provider = "sqlite"
+}
+
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
+}
+
+// Better Auth 1.6.26 + username() + admin().
+model User {
+    id              String    @id
+    name            String
+    email           String
+    emailVerified   Boolean   @default(false)
+    image           String?
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+    username        String?
+    displayUsername String?
+    role            String?
+    banned          Boolean?  @default(false)
+    banReason       String?
+    banExpires      DateTime?
+    sessions        Session[]
+    accounts        Account[]
+
+    @@unique([email])
+    @@unique([username])
+    @@map("user")
+}
+
+model Session {
+    id             String   @id
+    expiresAt      DateTime
+    token          String
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    ipAddress      String?
+    userAgent      String?
+    userId         String
+    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    impersonatedBy String?
+
+    @@unique([token])
+    @@index([userId])
+    @@map("session")
+}
+
+model Account {
+    id                    String    @id
+    accountId             String
+    providerId            String
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
+
+    @@index([userId])
+    @@map("account")
+}
+
+model Verification {
+    id         String   @id
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@index([identifier])
+    @@map("verification")
+}
+
+// 独立于 User 外键，删除用户后仍保留安全审计记录。
+model AuthAudit {
+    id            String   @id
+    eventType     String
+    outcome       String
+    providerId    String
+    userId        String?
+    actorUserId   String?
+    targetUserId  String?
+    principalHash String?
+    errorCode     String?
+    ipAddress     String?
+    userAgent     String?
+    requestId     String?
+    occurredAt    DateTime @default(now())
+
+    @@index([occurredAt])
+    @@index([userId, occurredAt])
+    @@index([actorUserId, occurredAt])
+    @@index([targetUserId, occurredAt])
+    @@index([eventType, outcome, occurredAt])
+    @@map("auth_audit")
+}

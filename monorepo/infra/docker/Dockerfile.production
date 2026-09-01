@@ -1,0 +1,6 @@
+# Path: monorepo/monorepo/build/docker/Dockerfile.production
+ARG BASE_IMAGE=node:22.15.0-slim
+
+FROM ${BASE_IMAGE}
+
+

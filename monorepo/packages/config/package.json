@@ -1,0 +1,19 @@
+{
+    "name": "@monorepo/config",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.ts"
+        }
+    },
+    "dependencies": {
+        "@monorepo/types": "workspace:*",
+        "@t3-oss/env-core": "catalog:",
+        "zod": "catalog:"
+    }
+}

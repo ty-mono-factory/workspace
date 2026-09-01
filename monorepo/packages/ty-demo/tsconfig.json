@@ -1,0 +1,16 @@
+{
+    "extends": "@monorepo/tooling/tsconfig/base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist",
+        "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "build"
+    ]
+}

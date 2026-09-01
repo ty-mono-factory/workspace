@@ -1,0 +1,48 @@
+{
+    "extends": "@monorepo/tooling/tsconfig/base.json",
+    "files": [],
+    "compilerOptions": {
+        "composite": true,
+        "baseUrl": ".",
+        "paths": {
+            "@monorepo/*": [
+                "packages/*/src"
+            ],
+            "@monorepo/crypto": [
+                "packages/crypto/src"
+            ],
+            "@monorepo/database": [
+                "packages/database/src"
+            ],
+            "@monorepo/logger": [
+                "packages/logger/src"
+            ],
+            "@monorepo/types": [
+                "packages/types/src"
+            ],
+            "@monorepo/tooling/*": [
+                "packages/tooling/*"
+            ]
+        },
+    },
+    "references": [
+        {
+            "path": "packages/types"
+        },
+        {
+            "path": "packages/logger"
+        },
+        {
+            "path": "packages/database"
+        },
+        {
+            "path": "packages/access-server"
+        },
+        {
+            "path": "apps/access-web"
+        },
+        {
+            "path": "packages/ty-demo"
+        },
+    ]
+}

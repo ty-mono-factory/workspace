@@ -1,0 +1,50 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "!packages/crypto"
+allowBuilds:
+  '@prisma/engines': false
+  esbuild: false
+  prisma: false
+catalog:
+  # ===== runtime dependencies =====
+  "@libsql/client": "0.14.0"
+  "@nuxt/ui": "2.21.1"
+  "@prisma/adapter-libsql": "7.9.1"
+  "@prisma/client": "7.9.1"
+  "@t3-oss/env-core": "0.11.1"
+  better-auth: "1.6.26"
+
+  # ===== type defination ==========
+  "@types/node": "22.13.8"
+  "@types/pino": "6.3.12"
+  "@typescript-eslint/eslint-plugin": "8.26.0"
+  "@typescript-eslint/parser": "8.26.0"
+  dotenv: "17.4.2"
+
+  # ===== Lint =====================
+  eslint: "9.21.0"
+  "eslint-plugin-vue": "9.32.0"
+  magicast: "0.3.5"
+  node-addon-api: "8.0.0"
+  node-gyp: "10.2.0"
+
+  # ===== Nuxt =====================
+  nuxt: "3.15.4"
+  pino: "9.0.0"
+  pino-pretty: "11.3.0"
+
+  # ===== database =================
+  prisma: "7.9.1"
+  shx: "0.3.4"
+  tsx: "4.19.2"
+  turbo: "2.5.0"
+
+  # ===== tool-chain ===============
+  typescript: "5.8.3"
+  vue: "3.5.13"
+  vue-router: "4.5.0"
+  vue-tsc: "2.1.10"
+  zod: "3.24.2"
+
+strictPeerDependencies: false

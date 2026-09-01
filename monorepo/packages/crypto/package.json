@@ -1,0 +1,26 @@
+{
+    "name": "@monorepo/crypto",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.json"
+    },
+    "devDependencies": {
+        "@monorepo/types": "workspace:*",
+        "@monorepo/tooling": "workspace:*",
+        "@types/node": "catalog:",
+        "typescript": "catalog:"
+    }
+}

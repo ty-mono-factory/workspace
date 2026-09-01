@@ -1,0 +1,16 @@
+{
+    "name": "@monorepo/tooling",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./eslint.config.js": "./eslint.config.js",
+        "./tsconfig/base.json": "./tsconfig/base.json"
+    },
+    "dependencies": {
+        "@typescript-eslint/eslint-plugin": "catalog:",
+        "@typescript-eslint/parser": "catalog:",
+        "eslint": "catalog:",
+        "eslint-plugin-vue": "catalog:"
+    }
+}

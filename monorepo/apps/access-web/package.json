@@ -1,0 +1,35 @@
+{
+    "name": "@monorepo/access-web",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=22.0.0",
+        "pnpm": ">=10.0.0"
+    },
+    "scripts": {
+        "dev": "nuxt dev --dotenv ../../.env",
+        "build": "nuxt build --dotenv ../../.env",
+        "generate": "nuxt generate --dotenv ../../.env",
+        "preview": "nuxt preview --dotenv ../../.env",
+        "start": "node .output/server/index.mjs",
+        "postinstall": "nuxt prepare",
+        "lint": "eslint . --fix",
+        "typecheck": "nuxt typecheck --dotenv ../../.env",
+        "test:contracts": "tsx --test ./tests/*.test.ts"
+    },
+    "dependencies": {
+        "@monorepo/access-server": "workspace:*",
+        "better-auth": "catalog:",
+        "vue": "catalog:",
+        "vue-router": "catalog:"
+    },
+    "devDependencies": {
+        "@monorepo/tooling": "workspace:*",
+        "@nuxt/ui": "catalog:",
+        "magicast": "catalog:",
+        "nuxt": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:",
+        "vue-tsc": "catalog:"
+    }
+}

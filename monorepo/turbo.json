@@ -1,0 +1,60 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "globalDependencies": [
+        ".env",
+        "tsconfig.json"
+    ],
+    "tasks": {
+        "build": {
+            "dependsOn": [
+                "^build"
+            ],
+            "inputs": [
+                "src/**/*",
+                "*.ts",
+                "package.json",
+                "tsconfig.json"
+            ],
+            "outputs": [
+                "dist/**",
+                "build/**",
+                ".nuxt/**",
+                ".output/**"
+            ]
+        },
+        "dev": {
+            "dependsOn": [
+                "^build"
+            ],
+            "cache": false,
+            "persistent": true
+        },
+        "lint": {
+            "dependsOn": [],
+            "inputs": [
+                "**/*.ts",
+                "**/*.js",
+                "**/*.vue",
+                "eslint.config.js",
+                "tsconfig.json"
+            ],
+            "outputs": []
+        },
+        "db:generate": {
+            "inputs": [
+                "./prisma/schema.prisma"
+            ],
+            "outputs": [
+                "../../node_modules/@prisma/client"
+            ],
+            "cache": true
+        },
+        "db:push": {
+            "cache": false
+        },
+        "db:studio": {
+            "cache": false,
+            "persistent": true
+        }
+    }
+}

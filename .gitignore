@@ -1,0 +1,117 @@
+# ============================================
+# 1. IDE 和编辑器
+# ============================================
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================
+# 2. 环境变量和敏感信息
+# ============================================
+.env
+**/.env
+.env.*
+.env.local
+.env.*.local
+!.env.example
+.git-credentials
+.gitconfig
+*.pem
+*.key
+*.crt
+
+# ============================================
+# 3. 包管理器和依赖
+# ============================================
+**/node_modules/
+pnpm-store/
+**/pnpm-store/
+!**/pnpm-store/.gitkeep
+
+corepack-cache/
+**/corepack-cache/
+!**/corepack-cache/.gitkeep
+
+ccache-storage/
+**/ccache-storage/
+!**/ccache-storage/.gitkeep
+
+.config/
+.turbo/
+
+# ============================================
+# 4. 构建产物（编译输出）
+# ============================================
+# 排除所有子包的 build/ 目录，但保留 monorepo/build/（构建脚本目录）
+**/build/
+**/artifacts/
+!monorepo/build/
+
+# Nuxt 前端构建产物
+.nuxt/
+.nitro/
+nitro/
+**/.nuxt/
+**/.output/
+**/output/
+**/dist/
+
+# 后端 API 构建产物（如果存在）
+apps/api/dist/
+apps/api/build/
+
+# ============================================
+# 5. 原生 C/C++ 编译产物
+# ============================================
+*.node
+*.so
+*.o
+*.a
+*.dylib
+*.dll
+Release/
+Debug/
+packages/corefeatures/build/
+
+# ============================================
+# 6. 数据库文件
+# ============================================
+**/*.db
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+packages/database/dev.db*
+packages/database/prisma.db*
+
+# ============================================
+# 7. 系统缓存和临时文件
+# ============================================
+**/.cache/
+**/.local/
+**/.editorconfig/
+tmp/
+temp/
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.bash_history
+.lesshst
+.viminfo
+tsconfig.tsbuildinfo
+
+# ============================================
+# 8. 锁文件（可选，根据团队习惯）
+# ============================================
+# pnpm-lock.yaml 通常建议提交，这里不排除
+# 如果团队约定不提交锁文件，取消下面的注释：
+# pnpm-lock.yaml

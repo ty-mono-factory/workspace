@@ -1,0 +1,37 @@
+{
+    "name": "@monorepo/ty-demo",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
+    "exports": {
+        "types": "./dist/src/index.d.ts",
+        "import": "./dist/src/index.js"
+    },
+    "files": [
+        "dist",
+        "build/Release/*.node"
+    ],
+    "sideEffects": false,
+    "scripts": {
+        "build:addon": "node-gyp rebuild",
+        "build:compile": "tsc -p tsconfig.json",
+        "build": "pnpm run build:addon && pnpm run build:compile",
+        "pretest": "pnpm run build:addon",
+        "test": "tsx --test ./tests/integration/*.test.ts"
+    },
+    "dependencies": {
+        "node-addon-api": "catalog:"
+    },
+    "devDependencies": {
+        "@monorepo/config": "workspace:*",
+        "@monorepo/logger": "workspace:*",
+        "@monorepo/tooling": "workspace:*",
+        "@monorepo/types": "workspace:*",
+        "@types/node": "catalog:",
+        "node-gyp": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:"
+    }
+}

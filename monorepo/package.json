@@ -1,0 +1,28 @@
+{
+    "name": "@monorepo/root",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "packageManager": "pnpm@10.34.4",
+    "scripts": {
+        "verify": "tsx scripts/verify.ts",
+        "build": "turbo run build",
+        "lint": "turbo run lint",
+        "dev": "turbo run dev",
+        "clean": "pnpm -r exec -- rm -rf dist build .turbo .nuxt && find packages apps -type f -name '*.tsbuildinfo' -delete && rm -f tsconfig.tsbuildinfo && rm -rf .turbo",
+        "db:generate": "pnpm --filter @monorepo/database db:generate",
+        "db:push": "pnpm --filter @monorepo/database db:push",
+        "db:studio": "pnpm --filter @monorepo/database db:studio"
+    },
+    "dependencies": {
+        "turbo": "catalog:"
+    },
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "tsx": "catalog:",
+        "typescript": "catalog:"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    }
+}
