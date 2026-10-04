@@ -22,7 +22,7 @@ fi
 usage="
     [-h|--help:             Show this document.]
     [-c|--for-ci-builder:   For CI/CD build.]
-    [-- <command>:          Reversed.]
+    [-- <command>:          Command to run inside the container (default: /bin/bash).]
 "
 
 command_args=()
@@ -44,7 +44,7 @@ if [ ${#command_args[@]} -eq 0 ]; then
     command_args=(/bin/bash)
 fi
 
-image_name="${image_registry}/${image_namespace}/${project_name}-builder:${builder_version:-latest}"
+image_name="${image_registry}/${image_namespace}/${project_name}-builder:${builder_version}"
 container_name="${project_name}-builder-${USER}-$$"
 
 if ! "${docker_bin}" image inspect "${image_name}" &>/dev/null; then
@@ -64,7 +64,6 @@ if [ -t 0 ]; then
     run_opts+=(-it)
 fi
 
-# Use docker/ as build context so Dockerfile can reference sibling files
 "${docker_bin}" run "${run_opts[@]}" \
   -v "${workspace_dir}:/workspace" \
   -w /workspace/monorepo \
