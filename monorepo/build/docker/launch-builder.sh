@@ -1,0 +1,91 @@
+#!/bin/bash
+
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "$0")" && pwd -P)"
+project_root=$(realpath "${script_dir}/../../../..")
+project_name=$(basename "${project_root}")
+workspace_dir=$(realpath "${script_dir}/../../..")
+
+if ! docker_bin="$(command -v docker)"; then
+    echo "docker has not been installed!" >&2
+    exit 1
+fi
+
+if [ -f "${script_dir}/docker.conf" ]; then
+    source "${script_dir}/docker.conf"
+else
+    echo "${script_dir}/docker.conf does NOT exist!" >&2
+    exit 1
+fi
+
+usage="
+    [-h|--help:             Show this document.]
+    [-c|--for-ci-builder:   For CI/CD build.]
+    [-- <command>:          Reversed.]
+"
+
+command_args=()
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help) echo "$usage" >&2; exit 0;;
+        -c|--for-ci-builder)
+            export CI=true
+            shift;;
+        --)
+            shift
+            command_args=("$@")
+            break;;
+        *) echo "Unsupported option $1" >&2; echo "$usage" >&2; exit 1;;
+    esac
+done
+
+if [ ${#command_args[@]} -eq 0 ]; then
+    command_args=(/bin/bash)
+fi
+
+image_name="${image_registry}/${image_namespace}/${project_name}-builder:${builder_version:-latest}"
+container_name="${project_name}-builder-${USER}-$$"
+
+if ! "${docker_bin}" image inspect "${image_name}" &>/dev/null; then
+    echo "image ${image_name} does NOT exist." >&2
+    ## Download the image from a server in the future.
+    # image_name_with_server="image-server.com/${image_name}"
+    # "${docker_bin}" pull "${image_name_with_server}" > /dev/null
+    exit 1
+fi
+
+run_opts=(
+    --rm
+    --init
+)
+
+if [ -t 0 ]; then
+    run_opts+=(-it)
+fi
+
+# Use docker/ as build context so Dockerfile can reference sibling files
+"${docker_bin}" run "${run_opts[@]}" \
+  -v "${workspace_dir}:/workspace" \
+  -w /workspace/monorepo \
+  -u "$(id -u):$(id -g)" \
+  -p 10001-10020:10001-10020 \
+  -p 5555:5555 \
+  -e HOME=/workspace \
+  -e CCACHE_DIR=/workspace/.cache/ccache \
+  -e CMAKE_BUILD_PARALLEL_LEVEL="$(nproc)" \
+  -e CMAKE_CACHE_DIR=/workspace/.cache/cmake \
+  -e CONAN_USER_HOME=/workspace/.cache/conan \
+  -e VCPKG_DEFAULT_BINARY_CACHE=/workspace/.cache/vcpkg \
+  -e XDG_CACHE_HOME=/workspace/.cache \
+  -e npm_config_cache=/workspace/.cache/npm \
+  -e YARN_CACHE_FOLDER=/workspace/.cache/yarn \
+  -e CARGO_HOME=/workspace/.cache/cargo \
+  -e GOPATH=/workspace/.cache/go \
+  -e PNPM_HOME=/workspace/pnpm-store \
+  -e PNPM_STORE_DIR=/workspace/pnpm-store/store \
+  -e COREPACK_HOME=/workspace/corepack-cache \
+  --name="${container_name}" \
+  "${image_name}" \
+  "${command_args[@]}"
+

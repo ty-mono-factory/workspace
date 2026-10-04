@@ -1,0 +1,9 @@
+# Runtime packages for access-web.
+# Format: <package-name> <version>. Use "latest" to let apt choose the
+# candidate from the configured repository.
+
+ca-certificates latest
+openssl latest
+tar latest
+gzip latest
+
