@@ -1,5 +1,6 @@
 import { PrismaLibSql } from '@prisma/adapter-libsql'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from './generated/client.js'
+export type { Prisma } from './generated/client.js'
 
 export const DEFAULT_DATABASE_URL =
     'file:/workspace/data/monorepo/database/dev.db'

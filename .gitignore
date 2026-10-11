@@ -56,6 +56,7 @@ data/
 **/apps/*/build/
 **/packages/*/build/
 **/artifacts/
+**/packages/database/src/generated/
 
 # Nuxt 前端构建产物
 .nuxt/

@@ -27,4 +27,4 @@ export {
     writeDatabase,
 } from './singleton.js'
 
-export * from '@prisma/client'
+export * from './generated/client.js'

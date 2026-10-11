@@ -2,7 +2,9 @@
     "$schema": "https://turbo.build/schema.json",
     "globalDependencies": [
         ".env",
-        "tsconfig.json"
+        "tsconfig.json",
+        "**/prisma/schema.prisma",
+        "**/prisma.config.ts"
     ],
     "tasks": {
         "build": {
@@ -20,7 +22,8 @@
                 "dist/**",
                 "build/**",
                 ".nuxt/**",
-                ".output/**"
+                ".output/**",
+                "src/generated/**"
             ]
         },
         "dev": {
@@ -46,7 +49,7 @@
                 "./prisma/schema.prisma"
             ],
             "outputs": [
-                "../../node_modules/@prisma/client"
+                "src/generated/**"
             ],
             "cache": true
         },

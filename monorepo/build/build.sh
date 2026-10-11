@@ -8,7 +8,7 @@ repo_root="$(CDPATH= cd -- "${script_dir}/.." && pwd)"
 usage() {
     cat >&2 <<'EOF'
 Usage:
-  build.sh --project <app>              Clean the workspace, build the app and package it
+  build.sh -p|--project <app>           Clean the workspace, build the app and package it
   build.sh --clean [--project <app>]    Clean all generated files, or only one app
 EOF
 }
@@ -94,8 +94,8 @@ fi
 
 app_dir="${repo_root}/apps/${PROJECT}"
 delivery_dir="${app_dir}/delivery"
-artifacts_dir="${repo_root}/build/artifacts/${PROJECT}"
-tarball="${repo_root}/build/artifacts/${PROJECT}.tar.gz"
+artifacts_dir="${repo_root}/artifacts/${PROJECT}"
+tarball="${repo_root}/artifacts/${PROJECT}.tar.gz"
 
 rm -rf "${artifacts_dir}" "${tarball}"
 
@@ -103,7 +103,7 @@ echo ">>> installing workspace dependencies"
 pnpm install --frozen-lockfile
 
 echo ">>> building app: ${PROJECT}"
-pnpm --filter "@monorepo/${PROJECT}" build
+pnpm --filter "@monorepo/${PROJECT}..." build
 
 mkdir -p "${artifacts_dir}"
 

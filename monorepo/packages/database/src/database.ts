@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from './client.js'
 import {
     createDatabaseClient,
     type CreateDatabaseClientOptions,
@@ -67,10 +67,13 @@ class PrismaDatabase implements Database {
         this.#assertOpen()
 
         if (!this.#connectPromise) {
-            this.#connectPromise = this.client.$connect().catch((error: unknown) => {
-                this.#connectPromise = undefined
+            const connectPromise = this.client.$connect().catch((error: unknown) => {
+                if (this.#connectPromise === connectPromise) {
+                    this.#connectPromise = undefined
+                }
                 throw error
             })
+            this.#connectPromise = connectPromise
         }
 
         return this.#connectPromise
