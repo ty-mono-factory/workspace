@@ -15,7 +15,8 @@
         "dist"
     ],
     "scripts": {
-        "build": "tsc -p tsconfig.json"
+        "build": "tsc -p tsconfig.json",
+        "clean": "rm -rf dist .turbo node_modules/.cache *.tsbuildinfo"
     },
     "devDependencies": {
         "@monorepo/types": "workspace:*",

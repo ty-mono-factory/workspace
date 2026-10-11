@@ -53,9 +53,9 @@ data/
 # 4. 构建产物（编译输出）
 # ============================================
 # 排除所有子包的 build/ 目录，但保留 monorepo/build/（构建脚本目录）
-**/build/
+**/apps/*/build/
+**/packages/*/build/
 **/artifacts/
-!monorepo/build/
 
 # Nuxt 前端构建产物
 .nuxt/
@@ -79,9 +79,6 @@ apps/api/build/
 *.a
 *.dylib
 *.dll
-Release/
-Debug/
-packages/corefeatures/build/
 
 # ============================================
 # 6. 数据库文件

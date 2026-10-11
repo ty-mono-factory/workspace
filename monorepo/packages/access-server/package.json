@@ -12,6 +12,7 @@
     "types": "./dist/index.d.ts",
     "scripts": {
         "build": "tsc -p tsconfig.json",
+        "clean": "rm -rf dist .turbo node_modules/.cache *.tsbuildinfo",
         "typecheck": "tsc -p tsconfig.json --noEmit",
         "test": "tsx --test ./tests/*.test.ts"
     },

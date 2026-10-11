@@ -3,8 +3,8 @@
 ARG base_image=node:22.15.0-slim
 FROM ${base_image}
 
-ARG APP_GID=1000
-ARG APP_UID=1000
+ARG app_gid=1000
+ARG app_uid=1000
 
 WORKDIR /workspace
 
@@ -18,8 +18,8 @@ apt-get install -y --no-install-recommends ${APT_OPTS} /workspace/offline/*.deb
 corepack enable
 npm install -g --force /workspace/offline/pnpm-10.34.4.tgz /workspace/offline/turbo-2.5.0.tgz
 rm -rf /var/lib/apt/lists/* /tmp/*
-getent group "${APP_GID}" >/dev/null || groupadd -r app -g "${APP_GID}"
-getent passwd "${APP_UID}" >/dev/null || useradd -r -g app -u "${APP_UID}" -d /workspace app
+getent group "${app_gid}" >/dev/null || groupadd -r app -g "${app_gid}"
+getent passwd "${app_uid}" >/dev/null || useradd -r -g app -u "${app_uid}" -d /workspace app
 EOF
 
 ENV PNPM_HOME=/workspace/pnpm-store \

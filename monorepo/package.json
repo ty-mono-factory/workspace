@@ -9,7 +9,7 @@
         "build": "turbo run build",
         "lint": "turbo run lint",
         "dev": "turbo run dev",
-        "clean": "pnpm -r exec -- rm -rf dist build .turbo .nuxt && find packages apps -type f -name '*.tsbuildinfo' -delete && rm -f tsconfig.tsbuildinfo && rm -rf .turbo",
+        "clean": "pnpm -r run clean && rm -rf .turbo",
         "db:generate": "pnpm --filter @monorepo/database db:generate",
         "db:push": "pnpm --filter @monorepo/database db:push",
         "db:studio": "pnpm --filter @monorepo/database db:studio"

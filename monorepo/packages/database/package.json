@@ -11,10 +11,11 @@
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "build": "tsc -p tsconfig.json",
         "db:push": "prisma db push --config prisma.config.ts",
         "db:generate": "prisma generate --config prisma.config.ts",
-        "db:studio": "HOST=0.0.0.0 prisma studio --port 5555 --browser none --config prisma.config.ts"
+        "db:studio": "HOST=0.0.0.0 prisma studio --port 5555 --browser none --config prisma.config.ts",
+        "build": "pnpm run db:generate && tsc -p tsconfig.json",
+        "clean": "rm -rf dist .turbo node_modules/.cache *.tsbuildinfo"
     },
     "devDependencies": {
         "@monorepo/tooling": "workspace:*",

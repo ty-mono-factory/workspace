@@ -18,6 +18,7 @@
         "build:addon": "node-gyp rebuild",
         "build:compile": "tsc -p tsconfig.json",
         "build": "pnpm run build:addon && pnpm run build:compile",
+        "clean": "rm -rf build dist .turbo node_modules/.cache *.tsbuildinfo",
         "pretest": "pnpm run build:addon",
         "test": "tsx --test ./tests/integration/*.test.ts"
     },

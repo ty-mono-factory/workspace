@@ -13,7 +13,8 @@
                 "src/**/*",
                 "*.ts",
                 "package.json",
-                "tsconfig.json"
+                "tsconfig.json",
+                "prisma/schema.prisma"
             ],
             "outputs": [
                 "dist/**",

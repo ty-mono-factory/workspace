@@ -2,8 +2,5 @@
 # Format: <package-name> <version>. Use "latest" to let apt choose the
 # candidate from the configured repository.
 
-ca-certificates latest
-openssl latest
-tar latest
-gzip latest
-
+ca-certificates 20250419~deb12u1
+openssl 3.0.22-1~deb12u1

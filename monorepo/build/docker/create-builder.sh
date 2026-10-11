@@ -107,8 +107,8 @@ fi
 
 build_opts=(
     --build-arg "base_image=${base_image}"
-    --build-arg "APP_UID=$(id -u)"
-    --build-arg "APP_GID=$(id -g)"
+    --build-arg "app_uid=$(id -u)"
+    --build-arg "app_gid=$(id -g)"
     --no-cache
     --progress=plain
 )
