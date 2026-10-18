@@ -16,7 +16,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 script_dir="$(cd "$(dirname "$0")" && pwd -P)"
-project_root=$(realpath "${script_dir}/../../../..")
+project_root=$(realpath "${script_dir}/../../../..") #used by docker.conf
 project_name=$(basename "${project_root}")
 
 if ! docker_bin="$(command -v docker)"; then

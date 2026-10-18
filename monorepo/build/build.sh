@@ -124,3 +124,35 @@ echo ">>> created ${tarball}"
 tar -czf "${tarball}" -C "${artifacts_dir}" .
 
 echo ">>> Build successfully!"
+
+##########################################################################
+
+echo ">>> installing database artifacts"
+
+database_dir="${repo_root}/artifacts/${PROJECT}-db"
+tarball_db="${repo_root}/artifacts/${PROJECT}-db.tar.gz"
+
+rm -rf "${database_dir}" "${tarball_db}"
+
+mkdir -p "${database_dir}"
+
+if [[ -d "${repo_root}/packages/database/prisma/migrations" ]]; then
+    cp -r "${repo_root}/packages/database/prisma/migrations" "${database_dir}/migrations"
+else
+    echo "error: migrations not found. Run:" >&2
+    echo "  pnpm --filter @monorepo/database exec prisma migrate dev --name init" >&2
+    exit 1
+fi
+
+cp "${repo_root}/packages/database/prisma/schema.prisma" "${database_dir}/"
+
+cat > "${database_dir}/prisma.config.js" <<'EOF'
+module.exports = {
+  schema: './schema.prisma',
+  migrations: { path: './migrations' },
+  datasource: { url: process.env.DATABASE_URL },
+}
+EOF
+
+
+tar -czf "${tarball_db}" -C "${database_dir}" .

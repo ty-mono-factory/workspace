@@ -11,6 +11,8 @@
     "scripts": {
         "db:push": "prisma db push --config prisma.config.ts",
         "db:generate": "prisma generate --config prisma.config.ts",
+        "db:migrate": "prisma migrate dev --config prisma.config.ts",
+        "db:deploy": "prisma migrate deploy --config prisma.config.ts",
         "db:studio": "HOST=0.0.0.0 prisma studio --port 5555 --browser none --config prisma.config.ts",
         "build": "pnpm run db:generate",
         "typecheck": "tsc -p tsconfig.json --noEmit",

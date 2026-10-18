@@ -1,0 +1,8 @@
+# apt package manifest for the offline builder materials.
+# Format: <package-name> <version>
+# The special version "latest" means: do not pin the version and let apt
+# select the current candidate from the configured repositories.
+
+ca-certificates 20250419~deb12u1
+openssl 3.0.22-1~deb12u1
+libssl3 3.0.22-1~deb12u1

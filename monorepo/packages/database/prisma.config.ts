@@ -1,15 +1,18 @@
-import { config } from 'dotenv'
 import { defineConfig } from 'prisma/config'
+import { config } from 'dotenv'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-config({ path: join(__dirname, '../../.env') })
+config({ path: join(__dirname, '../../.env'), quiet: true })
 
-const databaseUrl = process.env.DATABASE_URL ?? 'file:///workspace/data/monorepo/database/dev.db'
+const databaseUrl = process.env.DATABASE_URL
+if (!databaseUrl) {
+    throw new Error('DATABASE_URL is required. Run: source env.sh')
+}
+
 export default defineConfig({
-    schema: './prisma/schema.prisma',
-    datasource: {
-        url: databaseUrl,
-    },
+    schema: join(__dirname, 'prisma/schema.prisma'),
+    migrations: { path: join(__dirname, 'prisma/migrations') },
+    datasource: { url: databaseUrl },
 })
