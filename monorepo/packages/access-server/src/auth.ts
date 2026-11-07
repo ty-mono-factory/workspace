@@ -62,13 +62,6 @@ export interface AccessSession {
     }
 }
 
-export interface CreateBootstrapAdminInput {
-    email: string
-    password: string
-    name: string
-    username: string
-}
-
 export interface CreateAccessLocalUserInput {
     email: string
     password: string
@@ -98,25 +91,6 @@ export async function getAccessSession(headers: Headers): Promise<AccessSession 
             expiresAt: result.session.expiresAt,
         },
     }
-}
-
-export async function createBootstrapAdmin(
-    input: CreateBootstrapAdminInput,
-): Promise<{ userId: string }> {
-    const created = await accessAuth.api.createUser({
-        body: {
-            email: input.email,
-            password: input.password,
-            name: input.name,
-            role: 'admin',
-            data: {
-                username: input.username,
-                displayUsername: input.username,
-            },
-        },
-    })
-
-    return { userId: created.user.id }
 }
 
 export async function createAccessLocalUser(

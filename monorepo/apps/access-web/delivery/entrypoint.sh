@@ -29,6 +29,17 @@ EOF
     exit 1
 fi
 
+case "${1:-start}" in
+    admin-init)
+        shift
+        exec node ./access-web/server/admin-init.mjs "$@"
+        ;;
+    start)
+        [[ $# -le 1 ]] || { echo "error: start takes no arguments" >&2; exit 2; }
+        ;;
+    *) echo "Usage: entrypoint.sh [start|admin-init <options>]" >&2; exit 2 ;;
+esac
+
 # ---------- 启动 ----------
 export PORT="${PORT:-3000}"
 export HOST="${HOST:-0.0.0.0}"

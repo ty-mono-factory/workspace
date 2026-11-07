@@ -8,7 +8,7 @@
     },
     "scripts": {
         "dev": "nuxt dev --dotenv /dev/null",
-        "build": "nuxt build --dotenv /dev/null",
+        "build": "nuxt build --dotenv /dev/null && esbuild scripts/admin-init.ts --bundle --platform=node --format=esm --target=node22 --external:libsql --banner:js='import { createRequire } from \"node:module\"; const require = createRequire(import.meta.url);' --outfile=.output/server/admin-init.mjs",
         "clean": "rm -rf .nuxt .output .turbo node_modules/.cache",
         "generate": "nuxt generate --dotenv /dev/null",
         "preview": "nuxt preview --dotenv /dev/null",
@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@monorepo/access-server": "workspace:*",
+        "@monorepo/database": "workspace:*",
         "better-auth": "catalog:",
         "vue": "catalog:",
         "vue-router": "catalog:"
@@ -31,6 +32,7 @@
         "nuxt": "catalog:",
         "tsx": "catalog:",
         "typescript": "catalog:",
-        "vue-tsc": "catalog:"
+        "vue-tsc": "catalog:",
+        "esbuild": "0.24.2"
     }
 }

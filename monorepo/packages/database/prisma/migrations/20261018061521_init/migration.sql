@@ -106,3 +106,10 @@ CREATE INDEX "auth_audit_targetUserId_occurredAt_idx" ON "auth_audit"("targetUse
 
 -- CreateIndex
 CREATE INDEX "auth_audit_eventType_outcome_occurredAt_idx" ON "auth_audit"("eventType", "outcome", "occurredAt");
+
+-- CreateTable: permanent first-administrator initialization state.
+CREATE TABLE "access_initialization" (
+    "key" TEXT NOT NULL PRIMARY KEY CHECK ("key" = 'first-admin'),
+    "userId" TEXT,
+    "completedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

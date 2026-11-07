@@ -14,7 +14,3 @@ export {
     type LocalUserManagementErrorCode,
     type LocalUserSummary,
 } from './local-users.js'
-export {
-    bootstrapAdminFromEnvironment,
-    type BootstrapAdminResult,
-} from './provisioning.js'

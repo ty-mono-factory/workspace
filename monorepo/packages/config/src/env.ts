@@ -14,9 +14,6 @@ function readRuntimeEnv(): RuntimeEnv {
     ).process?.env ?? {};
 }
 
-const trueFalseSchema = z
-    .enum(["true", "false"])
-    .transform((value: string) => value === "true");
 const integerStringSchema = z
     .string()
     .regex(/^\d+$/, "必须是正整数")
@@ -37,11 +34,6 @@ function createValidatedEnv(runtimeEnv: RuntimeEnv) {
             ACCESS_SESSION_TTL_MINS: integerStringSchema.default("1440"),
             ACCESS_PASSWORD_MIN_LENGTH: integerStringSchema.default("10"),
             ACCESS_PASSWORD_MAX_LENGTH: integerStringSchema.default("128"),
-            ACCESS_BOOTSTRAP_ADMIN_ENABLED: trueFalseSchema.default("false"),
-            ACCESS_BOOTSTRAP_ADMIN_USERNAME: z.string().default("admin"),
-            ACCESS_BOOTSTRAP_ADMIN_EMAIL: z.string().email().default("admin@localhost.local"),
-            ACCESS_BOOTSTRAP_ADMIN_DISPLAY_NAME: z.string().default("Admin"),
-            ACCESS_BOOTSTRAP_ADMIN_PASSWORD: z.string().optional(),
             ACCESS_WEB_URL: z.string().url().default("http://localhost:10001"),
             TY_DEMO_URL: z.string().url().default("http://localhost:10002/"),
             TY_DEMO_ACCESS_MODE: z.enum(["public", "authenticated"]).default("authenticated"),

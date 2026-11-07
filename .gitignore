@@ -2,8 +2,6 @@
 # 1. IDE 和编辑器
 # ============================================
 .vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
 .idea/
 *.swp
 *.swo

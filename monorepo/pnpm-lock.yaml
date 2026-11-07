@@ -108,6 +108,9 @@ importers:
       '@monorepo/access-server':
         specifier: workspace:*
         version: link:../../packages/access-server
+      '@monorepo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       better-auth:
         specifier: 'catalog:'
         version: 1.6.26(@prisma/client@7.9.1(prisma@7.9.1(@types/react@19.3.0)(magicast@0.3.5)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.8.3))(typescript@5.8.3))(mysql2@3.15.3)(prisma@7.9.1(@types/react@19.3.0)(magicast@0.3.5)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.8.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vue@3.5.13(typescript@5.8.3))
@@ -124,6 +127,9 @@ importers:
       '@nuxt/ui':
         specifier: 'catalog:'
         version: 2.21.1(magicast@0.3.5)(tsx@4.19.2)(typescript@5.8.3)(vite@6.4.3(@types/node@22.13.8)(jiti@2.7.0)(terser@5.51.2)(tsx@4.19.2)(yaml@2.9.1))(vue@3.5.13(typescript@5.8.3))(yaml@2.9.1)
+      esbuild:
+        specifier: 0.24.2
+        version: 0.24.2
       magicast:
         specifier: 'catalog:'
         version: 0.3.5

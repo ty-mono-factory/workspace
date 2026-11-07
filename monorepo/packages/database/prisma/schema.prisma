@@ -102,3 +102,12 @@ model AuthAudit {
     @@index([eventType, outcome, occurredAt])
     @@map("auth_audit")
 }
+
+// Permanent singleton; deliberately has no cascading relation to User.
+model AccessInitialization {
+    key         String   @id
+    userId      String?
+    completedAt DateTime @default(now())
+
+    @@map("access_initialization")
+}

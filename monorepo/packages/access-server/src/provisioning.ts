@@ -1,123 +1,67 @@
-import { database } from '@monorepo/database'
-import { recordAccessAudit } from './audit.js'
-import { createBootstrapAdmin } from './auth.js'
+import { randomUUID } from 'node:crypto'
+import type { Database } from '@monorepo/database'
+import { hashPassword } from 'better-auth/crypto'
 import { readAccessServerConfig } from './config.js'
 
-const USERNAME_PATTERN = /^[a-zA-Z0-9_.]+$/
-
-export type BootstrapAdminResult =
-    | { status: 'disabled' }
-    | { status: 'already-exists'; userId: string }
-    | { status: 'created'; userId: string }
-
-interface BootstrapAdminInput {
+export interface InitialAdminInput {
     username: string
     email: string
     displayName: string
     password: string
 }
 
-function readBootstrapInput(env: NodeJS.ProcessEnv): BootstrapAdminInput | null {
-    if (env.ACCESS_BOOTSTRAP_ADMIN_ENABLED !== 'true') {
-        return null
-    }
-
-    const input = {
-        username: (env.ACCESS_BOOTSTRAP_ADMIN_USERNAME ?? 'admin').trim().toLowerCase(),
-        email: (env.ACCESS_BOOTSTRAP_ADMIN_EMAIL ?? 'admin@localhost.local').trim().toLowerCase(),
-        displayName: (env.ACCESS_BOOTSTRAP_ADMIN_DISPLAY_NAME ?? 'Admin').trim(),
-        password: env.ACCESS_BOOTSTRAP_ADMIN_PASSWORD ?? '',
-    }
-    const passwordPolicy = readAccessServerConfig(env).password
-
-    if (
-        input.username.length < 3
-        || input.username.length > 30
-        || !USERNAME_PATTERN.test(input.username)
-    ) {
-        throw new Error('Bootstrap admin username must be 3-30 safe characters')
-    }
-
-    if (!/^\S+@\S+\.\S+$/.test(input.email)) {
-        throw new Error('Bootstrap admin email is invalid')
-    }
-
-    if (input.displayName.length === 0 || input.displayName.length > 100) {
-        throw new Error('Bootstrap admin display name must be 1-100 characters')
-    }
-
-    if (
-        input.password.length < passwordPolicy.minLength
-        || input.password.length > passwordPolicy.maxLength
-    ) {
-        throw new Error(
-            `Bootstrap admin password must be ${passwordPolicy.minLength}-${passwordPolicy.maxLength} characters`,
-        )
-    }
-
-    return input
-}
-
-/** Development-only first administrator provisioning through Better Auth. */
-export async function bootstrapAdminFromEnvironment(
+/** Operator-only entry point. Never call this from an HTTP route or startup hook. */
+export async function initializeAdmin(
+    db: Database,
+    input: InitialAdminInput,
     env: NodeJS.ProcessEnv = process.env,
-): Promise<BootstrapAdminResult> {
-    const input = readBootstrapInput(env)
-    if (!input) {
-        return { status: 'disabled' }
+): Promise<{ userId: string }> {
+    const username = input.username.trim().toLowerCase()
+    const email = input.email.trim().toLowerCase()
+    const name = input.displayName.trim()
+    const policy = readAccessServerConfig(env).password
+    if (!/^[a-z0-9_.]{3,30}$/.test(username)
+        || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        || name.length === 0 || name.length > 100
+        || input.password.length < policy.minLength
+        || input.password.length > policy.maxLength) {
+        throw new Error('Invalid administrator identity or password length')
     }
 
-    const existing = await database.client.user.findFirst({
-        where: {
-            OR: [
-                { username: input.username },
-                { email: input.email },
-            ],
-        },
-        select: {
-            id: true,
-            role: true,
-            accounts: {
-                where: { providerId: 'credential' },
-                select: { id: true },
-                take: 1,
-            },
-        },
-    })
-
-    if (existing) {
-        const roles = existing.role?.split(',').map((role) => role.trim()) ?? []
-        if (existing.accounts.length === 0 || !roles.includes('admin')) {
-            throw new Error(
-                'Bootstrap identity exists without a Better Auth admin credential; reset development auth data instead of migrating the legacy password',
-            )
+    // Use the same password implementation as the pinned Better Auth version.
+    // Hash before taking SQLite's write lock; never log the password or hash.
+    const password = await hashPassword(input.password)
+    const userId = randomUUID()
+    return db.write(async (tx) => {
+        // This FIRST write arbitrates concurrent processes at the database level.
+        // Conflict is a refusal, never an upsert/reset of existing credentials.
+        const claimed = await tx.$executeRaw`
+            INSERT INTO "access_initialization" ("key", "userId")
+            VALUES ('first-admin', ${userId}) ON CONFLICT ("key") DO NOTHING
+        `
+        if (claimed !== 1) throw new Error('Administrator initialization is already complete')
+        if (await tx.user.count() !== 0) {
+            throw new Error('Existing users found; use the separate account recovery procedure')
         }
-
-        return { status: 'already-exists', userId: existing.id }
-    }
-
-    try {
-        const created = await createBootstrapAdmin({
-            email: input.email,
-            password: input.password,
-            name: input.displayName,
-            username: input.username,
+        await tx.user.create({
+            data: {
+                id: userId, name, email, username, displayUsername: username,
+                emailVerified: false, role: 'admin', banned: false,
+            },
         })
-
-        await recordAccessAudit({
-            eventType: 'BOOTSTRAP_ADMIN_CREATE',
-            outcome: 'SUCCESS',
-            providerId: 'access-admin',
-            userId: created.userId,
+        await tx.account.create({
+            data: {
+                id: randomUUID(), accountId: userId, userId,
+                providerId: 'credential', password,
+            },
         })
-
-        return { status: 'created', userId: created.userId }
-    } catch (error) {
-        await recordAccessAudit({
-            eventType: 'BOOTSTRAP_ADMIN_CREATE',
-            outcome: 'FAILURE',
-            providerId: 'access-admin',
+        // Unlike best-effort login auditing, this audit is part of the transaction.
+        await tx.authAudit.create({
+            data: {
+                id: randomUUID(), eventType: 'ADMIN_INITIALIZE', outcome: 'SUCCESS',
+                providerId: 'access-admin', userId,
+            },
         })
-        throw error
-    }
+        return { userId }
+    })
 }

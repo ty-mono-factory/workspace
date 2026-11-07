@@ -36,3 +36,11 @@ Adapt the image name to `docker.conf` and your checkout's project name. Supply
 application settings at runtime and use the same database URL, persistent storage
 and compatible UID/GID as the migrator. The default runtime user is node (UID 1000).
 See `build/dbmigrator/README.md` for migration and backup procedures.
+
+## First administrator (access-web only)
+
+After database migration, explicitly run `admin-init` from the application release
+image for a new installation, then start the web service. Application startup
+never creates users. See the [Access Web configuration and operations guide](../../apps/access-web/README.md#4-首个管理员显式执行-admin-init)
+for secret-file permissions, local development, deployment commands, existing
+database upgrades and the one-time transaction guarantee.
