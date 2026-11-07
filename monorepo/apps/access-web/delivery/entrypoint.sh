@@ -24,7 +24,7 @@ Choose one of:
        export DATABASE_URL="file:/var/lib/access-web/data.db"
        ./entrypoint.sh
 
-See ./database/README.md for migration instructions.
+Run the matching release dbmigrator image before starting the application.
 EOF
     exit 1
 fi

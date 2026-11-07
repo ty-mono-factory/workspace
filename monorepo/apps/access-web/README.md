@@ -1,13 +1,9 @@
-rm -rf /tmp/aaaa/bbbb
-mkdir -p /tmp/aaaa/bbbb
-tar xzf /workspace/monorepo/artifacts/access-web_db.tar.gz -C /tmp/aaaa/bbbb
+# Access Web delivery
+The application archive is artifacts/access-web.tar.gz.
+Build it with `bash build/release/build.sh --project access-web`.
+Build its runtime image with `bash build/release/image.sh --project access-web --release-tag 1.2.3`.
 
-ls -la /tmp/aaaa/bbbb
-# 确认只有 .js，没有 .ts
-
-docker run --rm \
-  -v /tmp/aaaa/bbbb:/migration \
-  -e DATABASE_URL="file:/tmp/test-deploy.db" \
-  registry.example.com/mini-factory/mini-factory-dbmigrator:1.0.0
-
-docker load -i mini-factory-dbmigrator.tar
+For database deployment use the release migrator procedure in
+[dbmigrator README](../../build/dbmigrator/README.md).
+Run the migrator before starting this application's matching release. Both
+containers must use the same persistent database directory and DATABASE_URL.

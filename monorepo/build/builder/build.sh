@@ -19,17 +19,6 @@ script_dir="$(cd "$(dirname "$0")" && pwd -P)"
 project_root=$(realpath "${script_dir}/../../../..") #used by docker.conf
 project_name=$(basename "${project_root}")
 
-if ! docker_bin="$(command -v docker)"; then
-    echo "docker has not been installed!" >&2
-    exit 1
-fi
-
-if [ -f "${script_dir}/docker.conf" ]; then
-    source "${script_dir}/docker.conf"
-else
-    echo "${script_dir}/docker.conf does NOT exist!" >&2
-    exit 1
-fi
 
 usage="
     [-h|--help:             Show this document.]
@@ -59,7 +48,20 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-dockerfile="${script_dir}/Dockerfile.builder"
+if ! docker_bin="$(command -v docker)"; then
+    echo "docker has not been installed!" >&2
+    exit 1
+fi
+
+if [ -f "${script_dir}/../docker.conf" ]; then
+    source "${script_dir}/../docker.conf"
+else
+    echo "${script_dir}/../docker.conf does NOT exist!" >&2
+    exit 1
+fi
+
+
+dockerfile="${script_dir}/Dockerfile"
 if [ ! -f "${dockerfile}" ]; then
     echo "ERROR: ${dockerfile} not found!" >&2
     exit 1

@@ -9,17 +9,6 @@ workspace_dir=$(realpath "${script_dir}/../../..")
 repo_root=$(realpath "${script_dir}/../..")
 env_file="${repo_root}/.env"
 
-if ! docker_bin="$(command -v docker)"; then
-    echo "docker has not been installed!" >&2
-    exit 1
-fi
-
-if [ -f "${script_dir}/docker.conf" ]; then
-    source "${script_dir}/docker.conf"
-else
-    echo "${script_dir}/docker.conf does NOT exist!" >&2
-    exit 1
-fi
 
 usage="
     [-h|--help:             Show this document.]
@@ -50,6 +39,19 @@ while [[ $# -gt 0 ]]; do
         *) echo "Unsupported option $1" >&2; echo "$usage" >&2; exit 1;;
     esac
 done
+
+if ! docker_bin="$(command -v docker)"; then
+    echo "docker has not been installed!" >&2
+    exit 1
+fi
+
+if [ -f "${script_dir}/../docker.conf" ]; then
+    source "${script_dir}/../docker.conf"
+else
+    echo "${script_dir}/../docker.conf does NOT exist!" >&2
+    exit 1
+fi
+
 
 if [ ${#command_args[@]} -eq 0 ]; then
     command_args=(/bin/bash)

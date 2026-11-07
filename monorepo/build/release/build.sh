@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-repo_root="$(CDPATH= cd -- "${script_dir}/.." && pwd)"
+repo_root="$(CDPATH= cd -- "${script_dir}/../.." && pwd)"
 
 usage() {
     cat >&2 <<'EOF'
@@ -41,7 +41,7 @@ done
 clean_workspace() {
     echo ">>> cleaning workspace generated files"
     pnpm clean
-    rm -rf "${repo_root}/build/artifacts"
+    rm -rf "${repo_root}/artifacts"
 }
 
 clean_project() {
@@ -61,8 +61,8 @@ clean_project() {
     echo ">>> cleaning app: ${project}"
     pnpm --filter "${app_dir}" clean
 
-    rm -rf "${repo_root}/build/artifacts/${project}"
-    rm -rf "${repo_root}/build/artifacts/${project}.tar.gz"
+    rm -rf "${repo_root}/artifacts/${project}"
+    rm -rf "${repo_root}/artifacts/${project}.tar.gz"
 }
 
 cd "${repo_root}"
@@ -123,41 +123,4 @@ rm -rf "${artifacts_dir}"/manifest
 echo ">>> created ${tarball}"
 tar -czf "${tarball}" -C "${artifacts_dir}" .
 
-echo ">>> Build successfully!"
-
-##########################################################################
-
-echo ">>> installing database artifacts"
-
-database_dir="${repo_root}/artifacts/${PROJECT}-db"
-tarball_db="${repo_root}/artifacts/${PROJECT}-db.tar.gz"
-
-rm -rf "${database_dir}" "${tarball_db}"
-
-mkdir -p "${database_dir}"
-
-if [[ -d "${repo_root}/packages/database/prisma/migrations" ]]; then
-    cp -r "${repo_root}/packages/database/prisma/migrations" "${database_dir}/migrations"
-else
-    echo "error: migrations not found. Run:" >&2
-    echo "  pnpm --filter @monorepo/database exec prisma migrate dev --name init" >&2
-    exit 1
-fi
-
-cp "${repo_root}/packages/database/prisma/schema.prisma" "${database_dir}/"
-
-cat > "${database_dir}/prisma.config.js" <<'EOF'
-const databaseUrl = process.env.DATABASE_URL
-if (!databaseUrl || databaseUrl.trim() === '') {
-  throw new Error('DATABASE_URL is required; inject it before starting the process')
-}
-
-module.exports = {
-  schema: './schema.prisma',
-  migrations: { path: './migrations' },
-  datasource: { url: databaseUrl },
-}
-EOF
-
-
-tar -czf "${tarball_db}" -C "${database_dir}" .
+echo ">>> Application artifacts built successfully!"
