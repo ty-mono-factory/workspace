@@ -147,10 +147,15 @@ fi
 cp "${repo_root}/packages/database/prisma/schema.prisma" "${database_dir}/"
 
 cat > "${database_dir}/prisma.config.js" <<'EOF'
+const databaseUrl = process.env.DATABASE_URL
+if (!databaseUrl || databaseUrl.trim() === '') {
+  throw new Error('DATABASE_URL is required; inject it before starting the process')
+}
+
 module.exports = {
   schema: './schema.prisma',
   migrations: { path: './migrations' },
-  datasource: { url: process.env.DATABASE_URL },
+  datasource: { url: databaseUrl },
 }
 EOF
 

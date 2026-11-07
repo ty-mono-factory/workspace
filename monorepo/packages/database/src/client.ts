@@ -2,9 +2,6 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 import { PrismaClient } from './generated/client.js'
 export type { Prisma } from './generated/client.js'
 
-export const DEFAULT_DATABASE_URL =
-    'file:/workspace/data/monorepo/database/dev.db'
-
 export type DatabaseClient = PrismaClient
 
 export interface CreateDatabaseClientOptions {
@@ -13,7 +10,11 @@ export interface CreateDatabaseClientOptions {
 }
 
 function resolveDatabaseUrl(options: CreateDatabaseClientOptions): string {
-    return options.databaseUrl ?? process.env.DATABASE_URL ?? DEFAULT_DATABASE_URL
+    const url = options.databaseUrl ?? process.env.DATABASE_URL
+    if (!url || url.trim() === '') {
+        throw new Error('DATABASE_URL is required; inject it before starting the process')
+    }
+    return url
 }
 
 function resolveAuthToken(

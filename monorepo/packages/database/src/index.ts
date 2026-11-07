@@ -1,5 +1,4 @@
 export {
-    DEFAULT_DATABASE_URL,
     createDatabaseClient,
     type CreateDatabaseClientOptions,
     type DatabaseClient,

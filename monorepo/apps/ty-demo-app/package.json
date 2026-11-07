@@ -7,15 +7,15 @@
         "pnpm": ">=10.0.0"
     },
     "scripts": {
-        "dev": "nuxt dev --dotenv ../../.env",
-        "build": "nuxt build --dotenv ../../.env",
+        "dev": "nuxt dev --dotenv /dev/null",
+        "build": "nuxt build --dotenv /dev/null",
         "clean": "rm -rf .nuxt .output .turbo node_modules/.cache",
-        "generate": "nuxt generate --dotenv ../../.env",
-        "preview": "nuxt preview --dotenv ../../.env",
+        "generate": "nuxt generate --dotenv /dev/null",
+        "preview": "nuxt preview --dotenv /dev/null",
         "start": "node .output/server/index.mjs",
-        "postinstall": "nuxt prepare",
+        "postinstall": "nuxt prepare --dotenv /dev/null",
         "lint": "eslint . --fix",
-        "typecheck": "nuxt typecheck --dotenv ../../.env",
+        "typecheck": "nuxt typecheck --dotenv /dev/null",
         "test:contracts": "tsx --test ./tests/*.test.ts"
     },
     "dependencies": {
