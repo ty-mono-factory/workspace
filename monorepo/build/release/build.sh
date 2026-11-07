@@ -8,7 +8,7 @@ repo_root="$(CDPATH= cd -- "${script_dir}/../.." && pwd)"
 usage() {
     cat >&2 <<'EOF'
 Usage:
-  build.sh -p|--project <app>           Clean the workspace, build the app and package it
+  build.sh -p|--project <app>           Clean workspace outputs, rebuild the app and its dependencies, and package it
   build.sh --clean [--project <app>]    Clean all generated files, or only one app
 EOF
 }
@@ -93,6 +93,7 @@ fi
 }
 
 app_dir="${repo_root}/apps/${PROJECT}"
+[[ -d "${app_dir}" ]] || { echo "error: app directory does not exist: ${app_dir}" >&2; exit 1; }
 delivery_dir="${app_dir}/delivery"
 artifacts_dir="${repo_root}/artifacts/${PROJECT}"
 tarball="${repo_root}/artifacts/${PROJECT}.tar.gz"
@@ -102,8 +103,11 @@ rm -rf "${artifacts_dir}" "${tarball}"
 echo ">>> installing workspace dependencies"
 pnpm install --frozen-lockfile
 
-echo ">>> building app: ${PROJECT}"
-pnpm --filter "@monorepo/${PROJECT}..." build
+echo ">>> cleaning workspace build outputs for release"
+pnpm clean
+
+echo ">>> rebuilding app and dependencies: ${PROJECT}"
+pnpm run build --filter="@monorepo/${PROJECT}..." --force
 
 mkdir -p "${artifacts_dir}"
 

@@ -2,21 +2,7 @@
     "$schema": "https://turbo.build/schema.json",
     "globalDependencies": [
         "tsconfig.json",
-        "**/prisma/schema.prisma",
-        "**/prisma.config.ts"
-    ],
-    "globalEnv": [
-        "DATABASE_*",
-        "TURSO_AUTH_TOKEN",
-        "BETTER_AUTH_*",
-        "ACCESS_*",
-        "TY_DEMO_*",
-        "DEMO_PORT",
-        "NUXT_*",
-        "NITRO_*",
-        "NODE_ENV",
-        "PORT",
-        "HOST"
+        "scripts/run-turbo.mjs"
     ],
     "tasks": {
         "build": {
@@ -24,18 +10,121 @@
                 "^build"
             ],
             "inputs": [
-                "src/**/*",
-                "*.ts",
-                "package.json",
-                "tsconfig.json",
-                "prisma/schema.prisma"
+                "$TURBO_DEFAULT$",
+                "!node_modules/**",
+                "!dist/**",
+                "!build/**",
+                "!.nuxt/**",
+                "!.output/**",
+                "!.turbo/**",
+                "!src/generated/**",
+                "!**/*.tsbuildinfo",
+                "!tests/**",
+                "!delivery/**",
+                "!README*"
             ],
             "outputs": [
-                "dist/**",
-                "build/**",
-                ".nuxt/**",
-                ".output/**",
+                "dist/**"
+            ]
+        },
+        "@monorepo/database#build": {
+            "dependsOn": [
+                "^build",
+                "db:generate"
+            ],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!node_modules/**",
+                "!dist/**",
+                "!build/**",
+                "!.nuxt/**",
+                "!.output/**",
+                "!.turbo/**",
+                "!src/generated/**",
+                "!**/*.tsbuildinfo",
+                "!tests/**",
+                "!delivery/**",
+                "!README*"
+            ],
+            "outputs": []
+        },
+        "@monorepo/database#db:generate": {
+            "inputs": [
+                "prisma/schema.prisma",
+                "prisma.config.ts",
+                "package.json"
+            ],
+            "env": [
+                "TURBO_ROOT_ENV",
+                "DATABASE_URL",
+                "NODE_ENV"
+            ],
+            "outputs": [
                 "src/generated/**"
+            ]
+        },
+        "@monorepo/access-server#build": {
+            "dependsOn": [
+                "^build"
+            ],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!node_modules/**",
+                "!dist/**",
+                "!build/**",
+                "!.nuxt/**",
+                "!.output/**",
+                "!.turbo/**",
+                "!src/generated/**",
+                "!**/*.tsbuildinfo",
+                "!tests/**",
+                "!delivery/**",
+                "!README*"
+            ],
+            "outputs": []
+        },
+        "@monorepo/ty-demo#build": {
+            "dependsOn": [
+                "^build",
+                "build:addon"
+            ],
+            "inputs": [
+                "src/**/*.ts",
+                "tsconfig.json",
+                "package.json"
+            ],
+            "outputs": [
+                "dist/**"
+            ]
+        },
+        "build:addon": {
+            "inputs": [
+                "binding.gyp",
+                "src/**/*.c",
+                "src/**/*.cc",
+                "src/**/*.cpp",
+                "src/**/*.h",
+                "src/**/*.hpp",
+                "package.json"
+            ],
+            "env": [
+                "TURBO_NATIVE_TOOLCHAIN",
+                "CC",
+                "CXX",
+                "CFLAGS",
+                "CXXFLAGS",
+                "CPPFLAGS",
+                "LDFLAGS",
+                "AR",
+                "PYTHON",
+                "npm_config_python",
+                "npm_config_arch",
+                "npm_config_target",
+                "npm_config_nodedir",
+                "npm_config_disturl"
+            ],
+            "outputs": [
+                "build/**"
             ]
         },
         "dev": {
@@ -43,34 +132,146 @@
                 "^build"
             ],
             "cache": false,
-            "persistent": true
+            "persistent": true,
+            "env": [
+                "TURBO_ROOT_ENV",
+                "NODE_ENV",
+                "DATABASE_*",
+                "TURSO_AUTH_TOKEN",
+                "BETTER_AUTH_*",
+                "ACCESS_*",
+                "TY_DEMO_*",
+                "DEMO_PORT",
+                "NUXT_*",
+                "NITRO_*",
+                "PORT",
+                "HOST"
+            ]
         },
         "lint": {
-            "dependsOn": [],
             "inputs": [
-                "**/*.ts",
-                "**/*.js",
-                "**/*.vue",
-                "eslint.config.js",
-                "tsconfig.json"
+                "$TURBO_DEFAULT$",
+                "!node_modules/**",
+                "!dist/**",
+                "!build/**",
+                "!.nuxt/**",
+                "!.output/**",
+                "!.turbo/**",
+                "!src/generated/**"
             ],
             "outputs": []
         },
         "db:generate": {
             "inputs": [
-                "./prisma/schema.prisma"
+                "prisma/schema.prisma",
+                "prisma.config.ts",
+                "package.json"
+            ],
+            "env": [
+                "TURBO_ROOT_ENV",
+                "DATABASE_URL",
+                "NODE_ENV"
             ],
             "outputs": [
                 "src/generated/**"
-            ],
-            "cache": true
+            ]
         },
         "db:push": {
-            "cache": false
+            "cache": false,
+            "env": [
+                "DATABASE_URL"
+            ]
+        },
+        "db:migrate": {
+            "cache": false,
+            "env": [
+                "DATABASE_URL"
+            ]
+        },
+        "db:deploy": {
+            "cache": false,
+            "env": [
+                "DATABASE_URL"
+            ]
         },
         "db:studio": {
             "cache": false,
-            "persistent": true
+            "persistent": true,
+            "env": [
+                "DATABASE_URL"
+            ]
+        },
+        "@monorepo/access-web#build": {
+            "dependsOn": [
+                "^build"
+            ],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!node_modules/**",
+                "!dist/**",
+                "!build/**",
+                "!.nuxt/**",
+                "!.output/**",
+                "!.turbo/**",
+                "!src/generated/**",
+                "!**/*.tsbuildinfo",
+                "!tests/**",
+                "!delivery/**",
+                "!README*"
+            ],
+            "env": [
+                "TURBO_ROOT_ENV",
+                "NODE_ENV",
+                "DATABASE_*",
+                "TURSO_AUTH_TOKEN",
+                "BETTER_AUTH_*",
+                "ACCESS_*",
+                "TY_DEMO_*",
+                "DEMO_PORT",
+                "NUXT_*",
+                "NITRO_*",
+                "PORT",
+                "HOST"
+            ],
+            "outputs": [
+                ".output/**"
+            ]
+        },
+        "@monorepo/ty-demo-app#build": {
+            "dependsOn": [
+                "^build"
+            ],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "!node_modules/**",
+                "!dist/**",
+                "!build/**",
+                "!.nuxt/**",
+                "!.output/**",
+                "!.turbo/**",
+                "!src/generated/**",
+                "!**/*.tsbuildinfo",
+                "!tests/**",
+                "!delivery/**",
+                "!README*"
+            ],
+            "env": [
+                "TURBO_ROOT_ENV",
+                "NODE_ENV",
+                "DATABASE_*",
+                "TURSO_AUTH_TOKEN",
+                "BETTER_AUTH_*",
+                "ACCESS_*",
+                "TY_DEMO_*",
+                "DEMO_PORT",
+                "NUXT_*",
+                "NITRO_*",
+                "PORT",
+                "HOST"
+            ],
+            "outputs": [
+                ".output/**"
+            ]
         }
     }
 }

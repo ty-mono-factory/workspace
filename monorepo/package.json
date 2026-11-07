@@ -6,13 +6,14 @@
     "packageManager": "pnpm@10.34.4",
     "scripts": {
         "verify": "tsx scripts/verify.ts",
-        "build": "turbo run build",
-        "lint": "turbo run lint",
-        "dev": "turbo run dev",
+        "build": "node scripts/run-turbo.mjs build",
+        "lint": "node scripts/run-turbo.mjs lint",
+        "dev": "node scripts/run-turbo.mjs dev",
         "clean": "pnpm -r run clean && rm -rf .turbo",
-        "db:generate": "pnpm --filter @monorepo/database db:generate",
+        "db:generate": "node scripts/run-turbo.mjs db:generate --filter=@monorepo/database",
         "db:push": "pnpm --filter @monorepo/database db:push",
-        "db:studio": "pnpm --filter @monorepo/database db:studio"
+        "db:studio": "pnpm --filter @monorepo/database db:studio",
+        "build:plan": "node scripts/run-turbo.mjs build --dry=json"
     },
     "dependencies": {
         "turbo": "catalog:"

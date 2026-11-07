@@ -6,6 +6,11 @@ bash build/release/image.sh --project access-web --release-tag 1.2.3
 ```
 
 `build.sh` needs the workspace Node/pnpm toolchain (locally or in the builder).
+It installs dependencies with the frozen lockfile, runs `pnpm clean` across the
+workspace, and forces every build task for the selected app and its dependencies
+to execute with Turbo `--force`, including Prisma generation and native addons
+when required. Previous build results are not reused, including remote cache.
+Other apps are cleaned but not built unless they are dependencies.
 It packages the application's `.output` and `apps/<app>/delivery/` files into
 `artifacts/<app>/` and `artifacts/<app>.tar.gz`. It does not package migrations.
 Use `--clean` or `--clean --project access-web` to clean generated files.

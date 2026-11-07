@@ -14,7 +14,7 @@
         "db:migrate": "prisma migrate dev --config prisma.config.ts",
         "db:deploy": "prisma migrate deploy --config prisma.config.ts",
         "db:studio": "HOST=0.0.0.0 prisma studio --port 5555 --browser none --config prisma.config.ts",
-        "build": "pnpm run db:generate",
+        "build": "tsc -p tsconfig.json --noEmit",
         "typecheck": "tsc -p tsconfig.json --noEmit",
         "clean": "rm -rf src/generated dist .turbo node_modules/.cache *.tsbuildinfo"
     },
